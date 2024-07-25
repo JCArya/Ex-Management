@@ -18,8 +18,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        Log::info('Register method started');
-
         // Validate request
         try {
             $validatedData = $request->validate([
@@ -32,15 +30,11 @@ class UserController extends Controller
                 'age' => 'required|integer'
             ]);
 
-            Log::info('Validation passed');
-
             // Handle file upload
             if ($request->hasFile('picture')) {
                 $image = $request->file('picture');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
-
-                Log::info('Image uploaded successfully');
 
                 // Create new user
                 $user = User::create([
@@ -55,18 +49,13 @@ class UserController extends Controller
 
                 Auth::login($user);
 
-                Log::info('User created successfully');
-
                 return redirect()->route('login')->with('success', 'Registration successful');
             } else {
-                Log::info('No picture uploaded');
                 return back()->with('error', 'Picture upload failed');
             }
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Error during registration: ' . $e->getMessage());
-            Log::error('Trace: ' . $e->getTraceAsString());
 
             return back()->with('error', 'Internal Server Error')->withInput();
         }
@@ -87,7 +76,6 @@ class UserController extends Controller
             ]);
 
             if (Auth::attempt($request->only('email', 'password'))) {
-                Log::info('User logged in successfully');
                 return redirect()->route('home')->with('success', 'Login successful');
             }
 
@@ -95,8 +83,6 @@ class UserController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Error during login: ' . $e->getMessage());
-            Log::error('Trace: ' . $e->getTraceAsString());
 
             return back()->with('error', 'Internal Server Error')->withInput();
         }
