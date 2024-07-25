@@ -1,3 +1,5 @@
+Steps for setting up this project
+
 Step 1. clone the repo https://github.com/JCArya/Ex-Management.git
 
 Step 2. composer install
